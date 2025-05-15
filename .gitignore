@@ -1,0 +1,10 @@
+start.bat
+
+# PyCache a dočasné soubory
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtuální prostředí
+venv/
