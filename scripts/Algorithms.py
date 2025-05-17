@@ -3,7 +3,7 @@ import shapely
 import geopandas as gpd
 import math
 
-from Contour import Contour
+from ContourNode import ContourNode
 from ContourTree import ContourTree
 
 class Algorithms:
@@ -16,7 +16,7 @@ class Algorithms:
         id = 1
         contours = []
         for index, row in gdf.iterrows():
-            contours.append(Contour(id, row['geometry'], round(row['Contour'],1)))
+            contours.append(ContourNode(id, row['geometry'], round(row['Contour'],1)))
             id += 1
             
         union_geom = gdf.geometry.unary_union
@@ -61,32 +61,32 @@ class Algorithms:
 
         return unique_groups, filtered_contours
 
-    def Brench(self, min, con):
-        branche = [item for item in con if item.polygon.contains(min.polygon)]
+    def createBrench(self, min, Con):
+        branche = [item for item in Con if item.polygon.contains(min.polygon)]
 
         brancheIds = [item.id for item in branche]
 
-        con = [item for item in con if item.id not in brancheIds]
+        Con = [item for item in Con if item.id not in brancheIds]
 
-        return branche, con
+        return branche, Con
 
-    def MinContain(self, max, con):
+    def MinContain(self, max, Con):
 
-        cont = [item for item in con if item.polygon.contains(max.polygon)]
+        Cont = [item for item in Con if item.polygon.contains(max.polygon)]
 
-        cont_delete = [item for item in cont if item.id != max.id]
+        Cont_delete = [item for item in Cont if item.id != max.id]
 
-        cont_min = min(cont_delete, key=lambda c: c.area)
+        cont_min = min(Cont_delete, key=lambda c: c.area)
 
         return cont_min
 
-    def Tree(self, con):
+    def createTree(self, con):
         start = True
         conAll = con
         while con:
             minContour = min(con, key=lambda c: c.area)
 
-            branche, con = self.Brench(minContour, con)
+            branche, con = self.createBrench(minContour, con)
 
             brancheSorted = sorted(branche, key=lambda c: c.area, reverse=True)
 
@@ -130,11 +130,11 @@ class Algorithms:
 
     def MaxContour(self, tree, finalContour, maxArea):
         
-        if maxArea is False:
+        if maxArea == -1:
             maxArea = math.inf
         
         for leaf in tree.leaves:
-            leafHeight = leaf.contour
+            leafHeight = leaf.height
             maxHeight = leafHeight
             maxContour = leaf
             contourBefore = leaf
@@ -146,8 +146,8 @@ class Algorithms:
                     Continue = False
 
                 if Continue is True:
-                    if maxHeight < contourNow.contour:
-                        maxHeight = contourNow.contour
+                    if maxHeight < contourNow.height:
+                        maxHeight = contourNow.height
                         maxContour = contourNow
                     contourBefore = contourNow
                     
@@ -176,7 +176,7 @@ class Algorithms:
     def filtration(self, con, con_all, min_area, max_area, side_compare, min_depth, max_depth, Circularity):
 
         # Contour mast be biger then parameter
-        if min_area != False:
+        if min_area >= 0:
             con = [item for item in con if item.area >= min_area]
 
         # Contour mast be smaller then parameter
@@ -194,7 +194,7 @@ class Algorithms:
         if min_depth != False:
             con_new = []
             for contour in con:
-                con_contain = [item.contour for item in con_all if contour.polygon.contains(item.polygon)]
+                con_contain = [item.height for item in con_all if contour.polygon.contains(item.polygon)]
                 if min(con_contain) + min_depth/100 <= max(con_contain):
                     con_new.append(contour)
             con = con_new
@@ -203,7 +203,7 @@ class Algorithms:
         if max_depth != False:
             con_new = []
             for contour in con:
-                con_contain = [item.contour for item in con_all if contour.polygon.contains(item.polygon)]
+                con_contain = [item.height for item in con_all if contour.polygon.contains(item.polygon)]
                 if min(con_contain) + max_depth/100 >= max(con_contain):
                     con_new.append(contour)
             con = con_new

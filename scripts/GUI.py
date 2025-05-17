@@ -144,12 +144,6 @@ class Ui_MainWindow(QWidget):
         self.file_output = f"{self.folder}/{name}.shp"
         self.params = [param.text() for param in self.param_inputs]
         
-        for i in range(len(self.params)):
-            if self.params[i] == '':
-                self.params[i] = False
-            else:
-                self.params[i] = int(self.params[i])
-        
         output_files = [
             os.path.join(self.folder, f"{name}.shp"),
             os.path.join(self.folder, f"{name}.shx"),
@@ -202,8 +196,22 @@ class Ui_MainWindow(QWidget):
             self.text_output.append("")
             self.text_output.append("Proces nebyl spuštěn!")
             return
+        
+        for i in range(len(self.params)):
+            if self.params[i] == '':
+                self.params[i] = -1
+            else:
+                self.params[i] = int(self.params[i])
 
-            
+        if any(self.params) == 0:
+            self.text_output.clear()
+            self.text_output.append("Chyba ve vstupních parametrech:")
+            self.text_output.append("")
+            self.text_output.append("Vstupní parametry musí být kladná čísla!")
+            self.text_output.append("")
+            self.text_output.append("Proces nebyl spuštěn!")
+            return
+        
         try:    
             self.proces_start()
                             

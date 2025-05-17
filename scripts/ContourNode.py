@@ -1,12 +1,12 @@
 import shapely
 import math
 
-class Contour:
-    def __init__(self, id: int, shape: shapely.LineString, contour: float):
+class ContourNode:
+    def __init__(self, id: int, shape: shapely.LineString, height: float):
         self.id = id
         self.shape = shape
-        self.contour = contour
-        self.polygon = None
+        self.height = height
+        self.polygon = shapely.Polygon()
         self.area = 0
         self.length = 0
         self.group = 0
@@ -32,10 +32,9 @@ class Contour:
 
         coords = list(MMB.exterior.coords[:-1])
 
-        # Spočítáme délky stran (v pořadí)
         side_lengths = [math.dist(coords[i], coords[i + 1]) for i in range(len(coords) - 1)]
 
-        # Určíme delší a kratší stranu
+
         self.MMB_width = min(side_lengths)
         self.MMB_length = max(side_lengths)
 

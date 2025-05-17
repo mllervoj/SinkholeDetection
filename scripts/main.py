@@ -48,7 +48,7 @@ class Main:
         for group in groups:
             groupContour = [item for item in contours if item.group == group]
         
-            groupContour, tree = alg.Tree(groupContour)
+            groupContour, tree = alg.createTree(groupContour)
         
             finalContour = alg.MaxContour(tree, finalContour, maxContourArea)
          
