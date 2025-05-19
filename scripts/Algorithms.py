@@ -129,7 +129,6 @@ class Algorithms:
         return conAll, tree
 
     def MaxContour(self, tree, finalContour, maxArea):
-        
         if maxArea == -1:
             maxArea = math.inf
         
@@ -152,8 +151,7 @@ class Algorithms:
                     contourBefore = contourNow
                     
                 if contourNow.parent is None:
-                    Continue = False
-
+                    Continue = False              
 
             if maxHeight > leafHeight:
                 finalContour.append(maxContour)
@@ -176,22 +174,22 @@ class Algorithms:
     def filtration(self, con, con_all, min_area, max_area, side_compare, min_depth, max_depth, Circularity):
 
         # Contour mast be biger then parameter
-        if min_area >= 0:
+        if min_area > 0:
             con = [item for item in con if item.area >= min_area]
 
         # Contour mast be smaller then parameter
-        if max_area != False:
+        if max_area > 0:
             con = [item for item in con if item.area <= max_area]
 
         for contour in con:
             contour.computeMMB()
 
         # Contour cant be to long
-        if side_compare != False:
+        if side_compare > 0:
             con = [item for item in con if side_compare*item.MMB_width > item.MMB_length]
 
         # Depth inside contour mast be more then parameter
-        if min_depth != False:
+        if min_depth > 0:
             con_new = []
             for contour in con:
                 con_contain = [item.height for item in con_all if contour.polygon.contains(item.polygon)]
@@ -200,7 +198,7 @@ class Algorithms:
             con = con_new
         
         # Depth inside contour mast be less then parameter
-        if max_depth != False:
+        if max_depth > 0:
             con_new = []
             for contour in con:
                 con_contain = [item.height for item in con_all if contour.polygon.contains(item.polygon)]

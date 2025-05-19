@@ -33,7 +33,7 @@ class Main:
         for contour in contours_all:
             contour.computeGeometry()
         
-        if minContourArea != False:
+        if minContourArea > 0:
             contours = [item for item in contours_all if item.area > minContourArea]
         else:
             contours = contours_all        
